@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container" id="todo-container">
+    <h1 style="display: flex; text-align: center; justify-content: center; padding: 28px;">To Do App</h1>
+    <hr>
+    <br><br>
+    <!-- 
+      للذهاب الي رابط الانشاء
+      hx-post="{% url 'create' %}"
+      لجعل الزر ارسال بدون كتابة ذالك
+      hx-trigger="submit"
+      بعد الانشاء يقوم بعرض كل الصفحة لان هذا هو 
+      ايدي الكونتاينر العام للصفحة
+      hx-target="#todo-container"
+      للتحويل الي الكونتاينر
+      hx-swap="outerHTML"
+     -->
+    <form action=""
+    hx-post="{% url 'create' %}"
+    hx-trigger="submit"
+    hx-target="#todo-container"
+    hx-swap="outerHTML"
+    >
+      {% csrf_token %}
+      <div class="form-group" style="
+      width: 50vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      margin: auto;
+      ">
+        
+        <input class="form-control" style="height: 50px;" type="text" placeholder="Enter ToDo" name="name" id="input">&nbsp;
+        <button class="btn btn-primary" style="
+        width: 100px;
+        height: 48px;
+        box-shadow: 0 0 5px blue;
+        margin-left: 5px;
+        border-radius: 15px;
+        font-weight: bold;
+        border: 2px solid aqua;
+        ">Add</button>
+      </div>
+      
+    </form>
+    <br>
+    <div style="
+    display: flow-root;
+    
+    
+    margin: auto;
+    background-color: white;
+    box-shadow: 0 0 20px aqua;
+    width: 480px;
+    height: 538px;
+    border-radius: 20px;
+    ">
+      <!-- <br> -->
+      <style>
+        .card-todo{
+          display: flex;
+          align-items: center;
+          
+          width: 94%;
+          height: 60px;
+          border: 2px solid black;
+          background-color: aquamarine;
+          border-radius: 20px;
+          margin: 15px 15px 0 15px;
+        }
+      </style>
+      {% for t in todo_all %}
+        <div class="card-todo">
+          <p style="
+          font-size: large;
+          font-weight: bold;
+          padding: 10px;
+          margin: 1px;
+          ">{{t.text}}</p>
+          <button style="
+          width: 80px;height: 42px;box-shadow: 0 0 10px rgb(38, 0, 255);margin-left: 5px;border-radius: 15px;font-weight: bold;border: 2px solid aqua;margin-left: auto;margin-right: 5px;" 
+          class="btn btn-success"
+          hx-get="{% url 'edit-todo' t.id %}"
+          hx-trigger="click"
+          hx-target="#input"
+          hx-swap="outerHTML"
+          >Edit</button>
+
+          <button style="
+          margin-right: 10px;width: 80px;height: 42px;box-shadow: 0 0 10px rgb(255, 0, 0);margin-left: 5px;border-radius: 15px;font-weight: bold;border: 2px solid aqua;" 
+          class="btn btn-danger"
+          hx-post="{% url 'delete-todo' t.id %}"
+          hx-trigger="click"
+          hx-target="#todo-container"
+          hx-swap="outerHTML"
+          hx-confirm="Deleting {{t.text}} ?"
+          >Delete</button>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  
+{% endblock content %}
