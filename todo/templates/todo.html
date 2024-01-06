@@ -32,7 +32,7 @@
       margin: auto;
       ">
         
-        <input class="form-control" style="height: 50px;" type="text" placeholder="Enter ToDo" name="name" id="input">&nbsp;
+        <input class="form-control hovered" style="height: 50px;" type="text" placeholder="Enter ToDo" name="name" id="input">&nbsp;
         <button class="btn btn-primary" style="
         width: 100px;
         height: 48px;
@@ -70,15 +70,58 @@
           border-radius: 20px;
           margin: 15px 15px 0 15px;
         }
+        .hovered:hover{
+          box-shadow: 0 0 20px rgb(234, 0, 255);
+        }
+        .hovered:active{
+          box-shadow: none;
+        }
       </style>
       {% for t in todo_all %}
         <div class="card-todo">
-          <p style="
-          font-size: large;
-          font-weight: bold;
-          padding: 10px;
-          margin: 1px;
-          ">{{t.text}}</p>
+          {% if t.completed == True %}
+            <div class="form-check" style="margin: 0 0 0 6px;">
+              <input style="width: 23px;height: 23px;" class="form-check-input hovered" type="checkbox" checked role="switch" id="flexSwitchCheckDefault"
+              hx-post="{% url 'todo-status' t.id %}"
+              hx-trigger="click"
+              hx-target="#todo-container"
+              hx-swap="outerHTML"
+              >
+            </div>
+            <p style="
+            font-size: large;
+            font-weight: bold;
+            padding: 5px;
+            margin: 1px;
+            text-decoration: line-through;
+            text-decoration-style: wavy;
+            ">{{t.text}}</p>
+          {% else %}
+            <div class="form-check" style="margin: 0 0 0 6px;">
+              <input style="width: 23px;height: 23px;" class="form-check-input hovered" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+              hx-post="{% url 'todo-status' t.id %}"
+              hx-trigger="click"
+              hx-target="#todo-container"
+              hx-swap="outerHTML"
+              >
+            </div>
+            <p style="
+            font-size: large;
+            font-weight: bold;
+            padding: 5px;
+            margin: 1px;
+            ">{{t.text}}</p>
+          {% endif %}
+          <!-- 
+            عملية لجلب البيانات ورفعها في مكان الادخال
+            hx-get="{% url 'edit-todo' t.id %}"
+            عند الضغط علي الزر سوف يعمل اجاكس
+            hx-trigger="click"
+            اللذي سوف يرفع فيه هوا المدخل
+            hx-target="#input"
+            استخدام مدخل بديل في الفيو
+            hx-swap="outerHTML"
+           -->
           <button style="
           width: 80px;height: 42px;box-shadow: 0 0 10px rgb(38, 0, 255);margin-left: 5px;border-radius: 15px;font-weight: bold;border: 2px solid aqua;margin-left: auto;margin-right: 5px;" 
           class="btn btn-success"
@@ -88,6 +131,18 @@
           hx-swap="outerHTML"
           >Edit</button>
 
+          <!-- 
+            لعملية الحذف
+            hx-post="{% url 'delete-todo' t.id %}"
+            عند الضغط علي الزر
+            hx-trigger="click"
+            سوف يعرض كل البيانات من الكونتاينر العام
+            hx-target="#todo-container"
+            وسوف امررها في الفيو
+            hx-swap="outerHTML"
+            رسالة تظهر ويجب الموافقة عليها للحذف
+            hx-confirm="Deleting {{t.text}} ?"
+           -->
           <button style="
           margin-right: 10px;width: 80px;height: 42px;box-shadow: 0 0 10px rgb(255, 0, 0);margin-left: 5px;border-radius: 15px;font-weight: bold;border: 2px solid aqua;" 
           class="btn btn-danger"
