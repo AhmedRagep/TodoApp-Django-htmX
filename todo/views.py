@@ -1,21 +1,10 @@
 from django.shortcuts import redirect, render
-from .models import Todo
+from .models import Todo,Contact
 from django.http import HttpResponse
+from .forms import ContactForm
 # Create your views here.
 
-# def todo(request):
-#   if request.POST:
-#     text = request.POST['name']
-#     create = Todo.objects.create(text=text)
-#     create.save()
-#     return redirect('todo')
-#   else:
-#     print('hello')
-#   todo_all = Todo.objects.all().order_by('-id')[:5]
-#   context = {
-#     'todo_all':todo_all
-#   }
-#   return render(request,'todo.html',context)
+
 
 def lists(request):
   todo_all = Todo.objects.all().order_by('-id')[:7]
@@ -93,3 +82,36 @@ def status_todo(request,pk):
   }
   return render(request,"todo.html",context)
   
+
+
+def contact(request):
+  
+  return render(request, 'contact_all.html',{"form":ContactForm(),'contacts':Contact.objects.all().order_by('-id')[:9]})
+
+
+def create_contact(request):
+  if request.POST:
+    form = ContactForm(request.POST or None)
+    if form.is_valid():
+      # جلب البيان المنشأ في متغير
+      contactname = form.save()
+      # ارساله لصفحة البيان الواحد
+      return render(request,'contact_list.html',{'contact':contactname})
+  # وهنا ارسال الفورم فارغه لكي تظهر عند اضافة جديد
+  return render(request,'contact.html',{'form':ContactForm()})
+
+
+
+def delete_contact(request,pk):
+  # htmx هتجيب التاسك صاحب الايدي وانا كتبته في 
+  contact_get = Contact.objects.get(id=pk)
+  # وهتحذفه
+  contact_get.delete()
+  # هتجيب كل التسكات ثاني وهيا دي اللي بتتمرر
+  contacts = Contact.objects.all().order_by('-id')[:9]
+
+  context = {
+    'form':ContactForm(),
+    'contacts':contacts
+  }
+  return render(request,"contact_all.html",context)

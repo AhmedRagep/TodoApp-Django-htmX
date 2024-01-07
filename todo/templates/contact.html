@@ -1,0 +1,51 @@
+<!-- إذا كنت تريد انشاء واحد فقظ تزيل تريجر وتضع زر في الاسفل -->
+
+<!-- 
+  استخدام هذه الدالة
+  hx-post="{% url 'create-contact' %}"
+  بعد الانشاء تجلب لي هذا المكان وهو عرض ماتم انشائه
+  hx-target="#contact-index"
+  يعني بعد الانشاء سوف تظهر اللذي انشئته بعد الموجودين 
+  hx-swap="beforeend"
+  بعد الانشاء تحذف الفورم من العرض
+  hx-on="htmx:afterRequest: this.remove()"
+  هذا لجعل عن الضغط علي هذا الزر وتم جلبه من خلال ايدي سوف يحفظ البيانات
+  hx-trigger="click from:#submit-all"
+ -->
+  <form
+  hx-post="{% url 'create-contact' %}"
+  hx-target="#contact-index"
+  hx-swap="beforebegin"
+  hx-on="htmx:afterRequest: this.remove()"
+  hx-trigger="click from:#submit-all"
+  >
+    <div class="row" style="display: flex;justify-content: center;">
+      <style>
+        #id_name,#id_phone_number{
+          box-shadow: 0 0 20px blue;
+          border: 1px solid aqua;
+          border-radius: 10px;
+          width: 210px;
+          height: 35px;
+          padding: 10px;
+        }
+      </style>
+      <div class="col-4 col-md-3">
+        <label for="">{{form.name.label}}</label>
+        {{form.name}}
+      </div>
+      <div class="col-4 col-md-3">
+        <label for="">{{form.phone_number.label}}</label>
+        {{form.phone_number}}
+      </div>
+      <!-- 
+        عند الضغط علي هذا الزر سوف يحذف الفورم
+        hx-on="click: this.closest('form').remove()" 
+      -->
+      <div class="col-3 align-self-end" style="padding: 15px;width: 110px;">
+        <button class="btn btn-danger button-color" style="width: 100px;height: 40px;margin: 5px;" type="button"
+        hx-on="click: this.closest('form').remove()"
+        >Cancel</button>
+      </div>
+    </div>
+  </form>

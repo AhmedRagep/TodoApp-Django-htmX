@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .button-color{
+        width: 117px;
+        height: 48px;
+        box-shadow: 0 0 5px blue;
+        margin-left: 5px;
+        border-radius: 15px;
+        font-size: 13px;
+        font-weight: bold;
+        border: 2px solid aqua;
+  }
+</style>
+<div class="container" id="container-contact">
+
+  <br>
+  <a hx-get="{% url 'todo' %}" hx-push-url="true" hx-target="body"><h1 class="text-primary text-center"> Add Contact</h1></a>
+  <br>
+  <div id="contact-form">
+    {% include 'contact.html' %}
+  </div>
+  <!-- 
+    عند الضغط علي هذا الزر سوف ينفذ الدالة وهيا بدون الارسال بها الفورم فقط
+    hx-get="{% url 'create-contact' %}"
+    الان جلب الفورم من خلال الايدي
+    hx-target="#contact-form"
+    جلب الفورم تحت الموجود 
+    hx-swap="beforeend"
+   -->
+  <div class="my-4 text-center ">
+    <button class="btn btn-primary button-color" type="button"
+    hx-get="{% url 'create-contact' %}"
+    hx-target="#contact-form"
+    hx-swap="beforeend"
+    >+ Add Contact</button>
+    <button type="button" class="btn btn-primary button-color" id="submit-all">Submit All</button>
+  </div>
+  <br>
+  <br>
+  <!-- 
+    توجد هنا ملحوظه هااامه
+    contacts الاسم المرر لهذه الصفحه هوا 
+    contact وهو من العرض ولاكن الاسم الممر من الصفحة اللي بها الجديد هوا 
+    واللذي يربط بينهم هوا الاسم اللذي في الفور فيجب ان يكون مساوي للاثنين
+   -->
+   <style>
+    .li-style{
+      font-size: larger;border: 2px solid aliceblue;border-radius: 10px;margin: 3px;display: table;padding: 5px;background-color: white;
+    }
+   </style>
+  <ul id="contact-index">
+    {% for contact in contacts %}
+      {% include 'contact_list.html' %}
+    {% endfor %}
+  </ul>
+
+</div>
+{% endblock content %}

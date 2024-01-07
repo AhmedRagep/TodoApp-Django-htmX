@@ -1,0 +1,8 @@
+<li class="li-style">Name: {{contact.name}} - Phone Number: {{contact.phone_number}}&nbsp;
+<button class="btn btn-danger button-color" style="width: 80px;height: 35px;"
+hx-post="{% url 'delete-contact' contact.id %}"
+hx-trigger="click"
+hx-target="#container-contact"
+hx-swap="outerHTML"
+hx-confirm="Deleting {{contact.name}} ?"
+>Delete</button></li>

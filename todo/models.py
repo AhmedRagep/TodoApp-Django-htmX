@@ -9,3 +9,15 @@ class Todo(models.Model):
 
   def __str__(self):
       return self.text[:40]
+  
+  class Meta:
+     verbose_name_plural = 'test name'
+
+
+
+class Contact(models.Model):
+  name = models.CharField(max_length=30)
+  phone_number = models.CharField(max_length=50)
+
+  def __str__(self):
+      return self.name
