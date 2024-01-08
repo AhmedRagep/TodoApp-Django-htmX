@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .models import Todo,Contact
 from django.http import HttpResponse
 from .forms import ContactForm
+from django.utils.html import format_html
 # Create your views here.
 
 
@@ -85,7 +86,6 @@ def status_todo(request,pk):
 
 
 def contact(request):
-  
   return render(request, 'contact_all.html',{"form":ContactForm(),'contacts':Contact.objects.all().order_by('-id')[:9]})
 
 
@@ -115,3 +115,48 @@ def delete_contact(request,pk):
     'contacts':contacts
   }
   return render(request,"contact_all.html",context)
+
+
+
+# جلب عدد البيانات جميعا
+def search_view(request):
+    all_contact = Contact.objects.all()
+    context = {'count': all_contact.count()}
+    return render(request, 'search.html', context)
+
+# دالة البحث
+def search_results_view(request):
+    # جلب البحث
+    query = request.GET.get('search', '')
+    # جلب جميع البيانات
+    all_contact = Contact.objects.all()
+    # لو البحث فيه كلام
+    if query:
+        # متغير بيه فلتر بالكلام اللي ببحث عنه
+        contact_name = all_contact.filter(name__icontains=query)
+        # جلب الكلام من البحث وعمل لون عليه من الدالة اللتي في الاسفل
+        highlighted_contact_name = [{
+           'name': highlight_matched_text(Contact.name, query),
+           'phone_number': highlight_matched_text(Contact.phone_number, query)}
+            for Contact in contact_name]
+    else:
+        highlighted_contact_name = []
+
+    # ارجع لي بالبيانات اللي جت من متغير اللون وكمان عدد النتائج
+    context = {'contact_name': highlighted_contact_name, 'count': all_contact.count()}
+    return render(request, 'search_results.html', context)
+
+
+def highlight_matched_text(text, query):
+    # يبحث عن موقع أول ظهور للكلمة المستهدفة في النص وتصغيرها
+    start = text.lower().find(query.lower())
+    # إذا لم يتم العثور على الكلمة المستهدفة، يتم إرجاع النص كما هو دون أي تغيير
+    if start == -1:
+        return text
+    # حساب نهاية الكلمة المستهدفة في النص
+    end = start + len(query)
+    # إنشاء نص مميز يتضمن الكلمة المستهدفة داخل عنصر <span> مع فئة highlight
+    # هذه الفئه موجودة في صفحة العرض
+    highlighted = format_html('<span class="highlight">{}</span>', text[start:end])
+    # إرجاع النص الجديد الذي يتضمن الجزء الأول من النص قبل الكلمة المستهدفة، والجزء المميز، والجزء الباقي من النص بعد الكلمة المستهدفة
+    return format_html('{}{}{}', text[:start], highlighted, text[end:])

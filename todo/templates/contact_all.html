@@ -1,6 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
+  #search-results {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 30%;
+    padding: 10px;
+    margin: 10px;
+    background-color: white; /* تعديل: إضافة خلفية بيضاء للنتائج */
+    z-index: 999; /* تعديل: لضمان ظهور فوق العناصر الأخرى */
+  }
+  .hovered{
+    border-radius: 12px;
+    padding: 10px;
+    background-color:#ffffff;
+  }
+  .hovered:hover{
+    background-color: aqua;
+    cursor: pointer;
+  }
+  #search-in {
+    
+    display: flex;
+    position: absolute;
+    margin: 10px;
+    width: 30%;
+    z-index: 999; /* تعديل: لضمان ظهور فوق العناصر الأخرى */
+  }
+
+  .container {
+    position: relative; /* تعديل: جعل العنصر الأب له relative لضمان استناد الـ absolute إليه */
+  }
   .button-color{
         width: 117px;
         height: 48px;
@@ -14,9 +45,32 @@
 </style>
 <div class="container" id="container-contact">
 
+  <section>
+    {% include 'search.html' %}
+  </section>
+
+   <!-- عرض نتائج البحث -->
+   <div id="search-results">
+    {% include "search_results.html" %}
+  </div>
+  <script>
+    function resualt(){
+      let s = document.getElementById('search-results');
+      s.style.display = 'block'
+    }
+    function hideResults(){
+      let s = document.getElementById('search-results');
+      setTimeout(function () {s.style.display='none'}, 500);
+    }
+  </script>
+  <!-- نهاية عرض نتائج البحث -->
+
+
   <br>
   <a hx-get="{% url 'todo' %}" hx-push-url="true" hx-target="body"><h1 class="text-primary text-center"> Add Contact</h1></a>
   <br>
+  
+
   <div id="contact-form">
     {% include 'contact.html' %}
   </div>
@@ -37,7 +91,7 @@
     <button type="button" class="btn btn-primary button-color" id="submit-all">Submit All</button>
   </div>
   <br>
-  <br>
+  
   <!-- 
     توجد هنا ملحوظه هااامه
     contacts الاسم المرر لهذه الصفحه هوا 

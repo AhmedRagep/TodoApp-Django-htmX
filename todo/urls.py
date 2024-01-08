@@ -12,4 +12,7 @@ urlpatterns = [
     path('create-contact',views.create_contact,name='create-contact'),
     path('delete-contact/<int:pk>',views.delete_contact,name='delete-contact'),
 
+    path('search',views.search_view,name='search'),
+    path('search-result',views.search_results_view,name='search-result'),
+
 ]
